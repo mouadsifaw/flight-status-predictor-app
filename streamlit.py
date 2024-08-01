@@ -4,11 +4,19 @@ import numpy as np
 import pandas as pd
 
 # Load the preprocessor and model
-with open('preprocessor.pkl', 'rb') as file:
-    preprocessor = pickle.load(file)
+try:
+    with open('preprocessor.pkl', 'rb') as file:
+        preprocessor = pickle.load(file)
+    print("File loaded successfully.")
+except Exception as e:
+    print(f"Error loading file: {e}")
 
-with open('best_rf_model.pkl', 'rb') as file:
-    best_rf = pickle.load(file)
+# Load the model
+try:
+    with open('best_rf_model.pkl', 'rb') as file:
+        best_rf = pickle.load(file)
+except Exception as e:
+    st.error(f"Error loading best_rf_model.pkl: {e}")
 
 # CSS to inject contained in a string
 page_bg_img = '''
