@@ -6,19 +6,25 @@ import pandas as pd
 try:
     with open('preprocessor.pkl', 'rb') as file:
         preprocessor = pickle.load(file)
-    st.write("Preprocessor loaded successfully.")
-except Exception as e:
-    st.error(f"Error loading preprocessor: {e}")
+except Exception:
+    st.error("There was a problem loading the preprocessor.")
 
 try:
     with open('best_rf_model.pkl', 'rb') as file:
         model = pickle.load(file)
-    st.write("Model loaded successfully.")
-except Exception as e:
-    st.error(f"Error loading model: {e}")
+except Exception:
+    st.error("There was a problem loading the model.")
 
 # Define the user interface
 st.markdown("<h1 style='text-align: center;'>Flight Delay Prediction</h1>", unsafe_allow_html=True)
+
+# Add Instructions in the Sidebar
+st.sidebar.markdown("""
+### Instructions
+1. **Select the flight details**: Use the dropdown menus to input the flight year, month, day, departure time block, and carrier.
+2. **Click on 'Predict'**: After filling in the details, click the **Predict** button to see if the flight is likely to be delayed.
+3. **View Results**: The result will be displayed below the button.
+""")
 
 # Input fields
 year = st.selectbox('Year', [2023, 2024])
@@ -47,16 +53,16 @@ if st.button('Predict'):
     # Preprocess the features
     try:
         preprocessed_features = preprocessor.transform(features)
-    except Exception as e:
-        st.error(f"Error preprocessing features: {e}")
+    except Exception:
+        st.error("There was a problem processing your input.")
+        st.stop()  # Stop further execution if preprocessing fails
     
     # Make prediction
     try:
         prediction = model.predict(preprocessed_features)
         if prediction[0] == 1:
-            st.write("The flight will likely be delayed by 15 minutes or more.")
+            st.success("The flight will likely be delayed by 15 minutes or more.")
         else:
-            st.write("The flight will likely not be delayed by 15 minutes or more.")
-    except Exception as e:
-        st.error(f"Error making prediction: {e}")
-
+            st.success("The flight will likely not be delayed by 15 minutes or more.")
+    except Exception:
+        st.error("There was a problem making the prediction.")
