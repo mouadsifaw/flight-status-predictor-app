@@ -45,25 +45,43 @@ st.markdown("""
 st.sidebar.header('Flight Delay Prediction')
 st.sidebar.write("Use this app to predict whether a flight will be delayed by 15 minutes or more based on various input features.")
 
-# Input fields in columns
+# Input fields in columns with placeholders and tooltips
 col1, col2 = st.columns(2)
 
 with col1:
-    year = st.selectbox('Year', [2024, 2025], help="Select the year of the flight.")
-    month = st.selectbox('Month', list(range(1, 13)), help="Select the month of the flight.")
-    day = st.selectbox('Day', list(range(1, 32)), help="Select the day of the flight.")
+    year = st.selectbox(
+        'Year',
+        [2024, 2025],
+        help="Select the year in which the flight is scheduled to take place. Only the years 2024 and 2025 are available."
+    )
+    month = st.selectbox(
+        'Month',
+        list(range(1, 13)),
+        help="Select the month in which the flight is scheduled. Choose a number from 1 (January) to 12 (December)."
+    )
+    day = st.selectbox(
+        'Day',
+        list(range(1, 32)),
+        help="Select the day of the month for the flight. Ensure the day is valid for the chosen month and year."
+    )
     
 with col2:
-    dep_time_block = st.selectbox('Departure Time Block', [
-        'Night', 'Early Morning', 'Evening', 'Morning', 'Afternoon', 'Early Afternoon'],
-        help="Select the time block when the flight is scheduled to depart.")
-    carrier = st.selectbox('Carrier', [
-        'Southwest Airlines Co.', 'United Air Lines Inc.', 'American Airlines Inc.',
-        'Spirit Air Lines', 'SkyWest Airlines Inc.', 'Delta Air Lines Inc.',
-        'Endeavor Air Inc.', 'PSA Airlines Inc.', 'Envoy Air',
-        'Hawaiian Airlines Inc.', 'Republic Airline', 'JetBlue Airways',
-        'Allegiant Air', 'Frontier Airlines Inc.', 'Alaska Airlines Inc.'],
-        help="Select the carrier for the flight.")
+    dep_time_block = st.selectbox(
+        'Departure Time Block',
+        ['Night', 'Early Morning', 'Evening', 'Morning', 'Afternoon', 'Early Afternoon'],
+        help="Select the time block when the flight is scheduled to depart. Options include Night, Early Morning, Morning, etc."
+    )
+    carrier = st.selectbox(
+        'Carrier',
+        [
+            'Southwest Airlines Co.', 'United Air Lines Inc.', 'American Airlines Inc.',
+            'Spirit Air Lines', 'SkyWest Airlines Inc.', 'Delta Air Lines Inc.',
+            'Endeavor Air Inc.', 'PSA Airlines Inc.', 'Envoy Air',
+            'Hawaiian Airlines Inc.', 'Republic Airline', 'JetBlue Airways',
+            'Allegiant Air', 'Frontier Airlines Inc.', 'Alaska Airlines Inc.'
+        ],
+        help="Select the airline carrier for the flight. Choose from a list of major airlines."
+    )
 
 # Predict button
 if st.button('Predict'):
