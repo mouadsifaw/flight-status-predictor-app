@@ -4,19 +4,22 @@ import numpy as np
 import pandas as pd
 
 # Load the preprocessor and model
+preprocessor = None
+model = None
+
 try:
     with open('preprocessor.pkl', 'rb') as file:
         preprocessor = pickle.load(file)
-    print("Preprocessor loaded successfully.")
+    st.write("Preprocessor loaded successfully.")
 except Exception as e:
-    print(f"Error loading preprocessor: {e}")
+    st.write(f"Error loading preprocessor: {e}")
 
 try:
     with open('best_rf_model.pkl', 'rb') as file:
         model = pickle.load(file)
-    print("Model loaded successfully.")
+    st.write("Model loaded successfully.")
 except Exception as e:
-    print(f"Error loading model: {e}")
+    st.write(f"Error loading model: {e}")
 
 # CSS to inject contained in a string
 page_bg_img = '''
@@ -51,32 +54,38 @@ carrier = st.selectbox('Carrier', [
 
 # Predict button
 if st.button('Predict', key='predict'):
-    # Prepare the features as a DataFrame
-    features = pd.DataFrame({
-        'Year': [year],
-        'Month': [month],
-        'Day': [day],
-        'Dep_Time_Block_Group': [dep_time_block],
-        'Carrier': [carrier]
-    })
-    
-    # Debug print to verify feature data
-    st.write("Features DataFrame:")
-    st.write(features)
-    
-    # Preprocess the features
-    try:
-        preprocessed_features = preprocessor.transform(features)
-        st.write("Preprocessed features:")
-        st.write(preprocessed_features)
+    # Check if preprocessor and model are loaded
+    if preprocessor is None:
+        st.write("Error: Preprocessor is not loaded.")
+    elif model is None:
+        st.write("Error: Model is not loaded.")
+    else:
+        # Prepare the features as a DataFrame
+        features = pd.DataFrame({
+            'Year': [year],
+            'Month': [month],
+            'Day': [day],
+            'Dep_Time_Block_Group': [dep_time_block],
+            'Carrier': [carrier]
+        })
         
-        # Make prediction
-        prediction = model.predict(preprocessed_features)
+        # Debug print to verify feature data
+        st.write("Features DataFrame:")
+        st.write(features)
         
-        # Display the result
-        if prediction[0] == 1:
-            st.markdown("<h3 style='color: white;'>The flight will likely be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
-        else:
-            st.markdown("<h3 style='color: white;'>The flight will likely not be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
-    except Exception as e:
-        st.write(f"Error during prediction: {e}")
+        try:
+            # Preprocess the features
+            preprocessed_features = preprocessor.transform(features)
+            st.write("Preprocessed features:")
+            st.write(preprocessed_features)
+            
+            # Make prediction
+            prediction = model.predict(preprocessed_features)
+            
+            # Display the result
+            if prediction[0] == 1:
+                st.markdown("<h3 style='color: white;'>The flight will likely be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+            else:
+                st.markdown("<h3 style='color: white;'>The flight will likely not be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+        except Exception as e:
+            st.write(f"Error during prediction: {e}")
