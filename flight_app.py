@@ -36,6 +36,18 @@ st.markdown("""
         font-size: 0.8em;
         color: #888888;
     }
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .header {
+            font-size: 1.5em;
+        }
+        .description {
+            font-size: 1em;
+        }
+        footer {
+            font-size: 0.7em;
+        }
+    }
     </style>
     <div class="header">Flight Delay Prediction</div>
     <div class="description">Enter flight details to predict if it will be delayed by 15 minutes or more.</div>
@@ -45,8 +57,8 @@ st.markdown("""
 st.sidebar.header('Flight Delay Prediction')
 st.sidebar.write("Use this app to predict whether a flight will be delayed by 15 minutes or more based on various input features.")
 
-# Input fields in columns with placeholders and tooltips
-col1, col2 = st.columns(2)
+# Input fields in columns
+col1, col2 = st.columns([1, 1])
 
 with col1:
     year = st.selectbox(
@@ -64,7 +76,7 @@ with col1:
         list(range(1, 32)),
         help="Select the day of the month for the flight. Ensure the day is valid for the chosen month and year."
     )
-    
+
 with col2:
     dep_time_block = st.selectbox(
         'Departure Time Block',
@@ -120,6 +132,6 @@ if st.button('Predict'):
 # Footer
 st.markdown("""
     <footer>
-        Developed by [Mouad Sifaw].
+        Developed by Mouad Sifaw.
     </footer>
 """, unsafe_allow_html=True)
