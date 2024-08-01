@@ -59,7 +59,3 @@ if st.button('Predict'):
             st.write("The flight will likely not be delayed by 15 minutes or more.")
     except Exception as e:
         st.error(f"Error making prediction: {e}")
-<<<<<<< HEAD
-
-=======
->>>>>>> 195f09422f08d7a0a82f97fc6c5fd1ca82fc75a1
