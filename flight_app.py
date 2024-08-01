@@ -120,6 +120,6 @@ if st.button('Predict'):
 # Footer
 st.markdown("""
     <footer>
-        Developed by [Your Name].
+        Developed by [Mouad Sifaw].
     </footer>
 """, unsafe_allow_html=True)
