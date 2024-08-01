@@ -4,17 +4,19 @@ import pandas as pd
 import calendar
 
 # Load the preprocessor and model
-try:
-    with open('preprocessor.pkl', 'rb') as file:
-        preprocessor = pickle.load(file)
-except Exception as e:
-    st.error(f"Error loading preprocessor: {e}")
+if 'preprocessor' not in st.session_state:
+    try:
+        with open('preprocessor.pkl', 'rb') as file:
+            st.session_state.preprocessor = pickle.load(file)
+    except Exception as e:
+        st.error(f"Error loading preprocessor: {e}")
 
-try:
-    with open('best_rf_model.pkl', 'rb') as file:
-        model = pickle.load(file)
-except Exception as e:
-    st.error(f"Error loading model: {e}")
+if 'model' not in st.session_state:
+    try:
+        with open('best_rf_model.pkl', 'rb') as file:
+            st.session_state.model = pickle.load(file)
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
 
 # Define the user interface
 st.markdown("""
@@ -61,29 +63,29 @@ st.sidebar.write("Use this app to predict whether a flight will be delayed upon 
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    year = st.selectbox(
+    st.session_state.year = st.selectbox(
         'Year',
         [2024, 2025],
         help="Select the year in which the flight is scheduled to take place. Only the years 2024 and 2025 are available."
     )
-    month = st.selectbox(
+    st.session_state.month = st.selectbox(
         'Month',
         list(range(1, 13)),
         help="Select the month in which the flight is scheduled. Choose a number from 1 (January) to 12 (December)."
     )
-    day = st.selectbox(
+    st.session_state.day = st.selectbox(
         'Day',
         list(range(1, 32)),
         help="Select the day of the month for the flight. Ensure the day is valid for the chosen month and year."
     )
     
 with col2:
-    dep_time_block = st.selectbox(
+    st.session_state.dep_time_block = st.selectbox(
         'Departure Time Block',
         ['Night', 'Early Morning', 'Evening', 'Morning', 'Afternoon', 'Early Afternoon'],
         help="Select the time block when the flight is scheduled to depart. Options include Night, Early Morning, Morning, etc."
     )
-    carrier = st.selectbox(
+    st.session_state.carrier = st.selectbox(
         'Carrier',
         [
             'Southwest Airlines Co.', 'United Air Lines Inc.', 'American Airlines Inc.',
@@ -98,30 +100,31 @@ with col2:
 # Predict button
 if st.button('Predict'):
     # Validate day for the chosen month and year
-    if not (1 <= day <= calendar.monthrange(year, month)[1]):
-        st.error(f"Day {day} is not valid for {calendar.month_name[month]} {year}.")
+    if not (1 <= st.session_state.day <= calendar.monthrange(st.session_state.year, st.session_state.month)[1]):
+        st.error(f"Day {st.session_state.day} is not valid for {calendar.month_name[st.session_state.month]} {st.session_state.year}.")
     else:
         with st.spinner('Making prediction...'):
             # Prepare the features as a DataFrame
             features = pd.DataFrame({
-                'Year': [year],
-                'Month': [month],
-                'Day': [day],
-                'Dep_Time_Block_Group': [dep_time_block],
-                'Carrier': [carrier]
+                'Year': [st.session_state.year],
+                'Month': [st.session_state.month],
+                'Day': [st.session_state.day],
+                'Dep_Time_Block_Group': [st.session_state.dep_time_block],
+                'Carrier': [st.session_state.carrier]
             })
             
             # Preprocess the features
             try:
-                preprocessed_features = preprocessor.transform(features)
+                preprocessed_features = st.session_state.preprocessor.transform(features)
+                st.session_state.preprocessed_features = preprocessed_features
             except Exception as e:
                 st.error(f"Error preprocessing features: {e}")
-                preprocessed_features = None
+                st.session_state.preprocessed_features = None
             
-            if preprocessed_features is not None:
+            if st.session_state.preprocessed_features is not None:
                 # Make prediction
                 try:
-                    prediction = model.predict(preprocessed_features)
+                    prediction = st.session_state.model.predict(st.session_state.preprocessed_features)
                     if prediction[0] == 1:
                         st.write("The flight will likely be delayed upon arrival by 15 minutes or more.")
                     else:
