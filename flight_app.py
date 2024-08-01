@@ -7,17 +7,17 @@ import pandas as pd
 try:
     with open('preprocessor.pkl', 'rb') as file:
         preprocessor = pickle.load(file)
-    print("File loaded successfully.")
+    print("Preprocessor loaded successfully.")
 except Exception as e:
-    print(f"Error loading file: {e}")
+    print(f"Error loading preprocessor: {e}")
 
 try:
     with open('best_rf_model.pkl', 'rb') as file:
         model = pickle.load(file)
-    print("File loaded successfully.")
+    print("Model loaded successfully.")
 except Exception as e:
-    print(f"Error loading file: {e}")
-    
+    print(f"Error loading model: {e}")
+
 # CSS to inject contained in a string
 page_bg_img = '''
 <style>
@@ -60,15 +60,23 @@ if st.button('Predict', key='predict'):
         'Carrier': [carrier]
     })
     
+    # Debug print to verify feature data
+    st.write("Features DataFrame:")
+    st.write(features)
+    
     # Preprocess the features
-    preprocessed_features = preprocessor.transform(features)
-    
-    # Make prediction
-    prediction = model.predict(preprocessed_features)
-    
-    # Display the result
-    if prediction[0] == 1:
-        st.markdown("<h3 style='color: white;'>The flight will likely be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
-    else:
-        st.markdown("<h3 style='color: white;'>The flight will likely not be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
-
+    try:
+        preprocessed_features = preprocessor.transform(features)
+        st.write("Preprocessed features:")
+        st.write(preprocessed_features)
+        
+        # Make prediction
+        prediction = model.predict(preprocessed_features)
+        
+        # Display the result
+        if prediction[0] == 1:
+            st.markdown("<h3 style='color: white;'>The flight will likely be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+        else:
+            st.markdown("<h3 style='color: white;'>The flight will likely not be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+    except Exception as e:
+        st.write(f"Error during prediction: {e}")
