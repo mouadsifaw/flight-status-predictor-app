@@ -50,14 +50,14 @@ st.markdown("""
     }
     </style>
     <div class="header">Flight Delay Prediction</div>
-    <div class="description">Enter flight details to predict if it will be delayed by 15 minutes or more.</div>
+    <div class="description">Enter flight details to predict if it will be delayed upon arrival by 15 minutes or more.</div>
 """, unsafe_allow_html=True)
 
 # Sidebar
 st.sidebar.header('Flight Delay Prediction')
-st.sidebar.write("Use this app to predict whether a flight will be delayed by 15 minutes or more based on various input features.")
+st.sidebar.write("Use this app to predict whether a flight will be delayed upon arrival by 15 minutes or more based on various input features.")
 
-# Input fields in columns
+# Input fields in columns with placeholders and tooltips
 col1, col2 = st.columns([1, 1])
 
 with col1:
@@ -76,7 +76,7 @@ with col1:
         list(range(1, 32)),
         help="Select the day of the month for the flight. Ensure the day is valid for the chosen month and year."
     )
-
+    
 with col2:
     dep_time_block = st.selectbox(
         'Departure Time Block',
@@ -123,15 +123,15 @@ if st.button('Predict'):
                 try:
                     prediction = model.predict(preprocessed_features)
                     if prediction[0] == 1:
-                        st.write("The flight will likely be delayed by 15 minutes or more.")
+                        st.write("The flight will likely be delayed upon arrival by 15 minutes or more.")
                     else:
-                        st.write("The flight will likely not be delayed by 15 minutes or more.")
+                        st.write("The flight will likely not be delayed upon arrival by 15 minutes or more.")
                 except Exception as e:
                     st.error(f"Error making prediction: {e}")
 
 # Footer
 st.markdown("""
     <footer>
-        Developed by Mouad Sifaw.
+        Developed by Mouad Ait Khouya.
     </footer>
 """, unsafe_allow_html=True)
