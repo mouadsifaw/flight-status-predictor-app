@@ -13,7 +13,9 @@ def download_file_from_drive(file_id):
     return BytesIO(response.content)
 
 # Load the preprocessor
+preprocessor = None
 try:
+    # Assuming preprocessor.pkl is in the same directory as this script
     with open('preprocessor.pkl', 'rb') as file:
         preprocessor = pickle.load(file)
     st.success("Preprocessor loaded successfully.")
@@ -24,6 +26,7 @@ except Exception as e:
 model_file_id = '1OzFP3cFKwKbGVMW35ytUv7CppVKfnEIs'
 
 # Load the model
+best_rf = None
 try:
     model_file = download_file_from_drive(model_file_id)
     best_rf = pickle.load(model_file)
@@ -64,23 +67,29 @@ carrier = st.selectbox('Carrier', [
 
 # Predict button
 if st.button('Predict', key='predict'):
-    # Prepare the features as a DataFrame
-    features = pd.DataFrame({
-        'Year': [year],
-        'Month': [month],
-        'Day': [day],
-        'Dep_Time_Block_Group': [dep_time_block],
-        'Carrier': [carrier]
-    })
-    
-    # Preprocess the features
-    preprocessed_features = preprocessor.transform(features)
-    
-    # Make prediction
-    prediction = best_rf.predict(preprocessed_features)
-    
-    # Display the result
-    if prediction[0] == 1:
-        st.markdown("<h3 style='color: white;'>The flight will likely be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+    if preprocessor is None or best_rf is None:
+        st.error("Model or preprocessor not loaded.")
     else:
-        st.markdown("<h3 style='color: white;'>The flight will likely not be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+        try:
+            # Prepare the features as a DataFrame
+            features = pd.DataFrame({
+                'Year': [year],
+                'Month': [month],
+                'Day': [day],
+                'Dep_Time_Block_Group': [dep_time_block],
+                'Carrier': [carrier]
+            })
+
+            # Preprocess the features
+            preprocessed_features = preprocessor.transform(features)
+
+            # Make prediction
+            prediction = best_rf.predict(preprocessed_features)
+
+            # Display the result
+            if prediction[0] == 1:
+                st.markdown("<h3 style='color: white;'>The flight will likely be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+            else:
+                st.markdown("<h3 style='color: white;'>The flight will likely not be delayed by 15 minutes or more.</h3>", unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Error during prediction: {e}")
