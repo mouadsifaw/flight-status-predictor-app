@@ -6,35 +6,93 @@ import pandas as pd
 try:
     with open('my_preprocessor.pkl', 'rb') as file:
         preprocessor = pickle.load(file)
-    st.write("Preprocessor loaded successfully.")
+    st.success("Preprocessor loaded successfully.")
 except Exception as e:
     st.error(f"Error loading preprocessor: {e}")
 
 try:
     with open('best_model.pkl', 'rb') as file:
         model = pickle.load(file)
-    st.write("Model loaded successfully.")
+    st.success("Model loaded successfully.")
 except Exception as e:
     st.error(f"Error loading model: {e}")
 
-# Define the user interface
-st.markdown("<h1 style='text-align: center;'>Flight Delay Prediction</h1>", unsafe_allow_html=True)
+# CSS styling for the app
+st.markdown("""
+    <style>
+    body {
+        background-color: #f0f0f5;
+        color: #333;
+        font-family: Arial, sans-serif;
+    }
+    .header {
+        background: #009688;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+    }
+    .container {
+        margin: 20px;
+    }
+    .input-box {
+        margin: 10px 0;
+    }
+    .result {
+        font-size: 18px;
+        font-weight: bold;
+        color: #009688;
+    }
+    .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #555;
+    }
+    .legend {
+        padding: 10px;
+        background: #e0f2f1;
+        border-radius: 5px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Header
+st.markdown("<div class='header'><h1>Flight Delay Prediction</h1></div>", unsafe_allow_html=True)
+
+# Container for input fields
+st.markdown("<div class='container'>", unsafe_allow_html=True)
 
 # Input fields
-year = st.selectbox('Year', [2024, 2025])
-month = st.selectbox('Month', list(range(1, 13)))
-day = st.selectbox('Day', list(range(1, 32)))
+year = st.selectbox('Year', [2024, 2025], key='year', help='Select the year of the flight.')
+month = st.selectbox('Month', list(range(1, 13)), key='month', help='Select the month of the flight.')
+day = st.selectbox('Day', list(range(1, 32)), key='day', help='Select the day of the flight.')
 dep_time_block = st.selectbox('Departure Time Block', [
-    'Night', 'Early Morning', 'Evening', 'Morning', 'Afternoon', 'Early Afternoon'])
+    'Night', 'Early Morning', 'Evening', 'Morning', 'Afternoon', 'Early Afternoon'], key='dep_time_block', help='Select the departure time block.')
 carrier = st.selectbox('Carrier', [
     'Southwest Airlines Co.', 'United Air Lines Inc.', 'American Airlines Inc.',
     'Spirit Air Lines', 'SkyWest Airlines Inc.', 'Delta Air Lines Inc.',
     'Endeavor Air Inc.', 'PSA Airlines Inc.', 'Envoy Air',
     'Hawaiian Airlines Inc.', 'Republic Airline', 'JetBlue Airways',
-    'Allegiant Air', 'Frontier Airlines Inc.', 'Alaska Airlines Inc.'])
+    'Allegiant Air', 'Frontier Airlines Inc.', 'Alaska Airlines Inc.'], key='carrier', help='Select the airline carrier.')
+
+# Legend for Departure Time Blocks
+st.markdown("""
+    <div class='legend'>
+    <h3>Departure Time Block Legend</h3>
+    <ul>
+        <li><b>Night:</b> 8:00 PM - 11:59 PM</li>
+        <li><b>Early Morning:</b> 12:00 AM - 6:00 AM</li>
+        <li><b>Morning:</b> 6:00 AM - 12:00 PM</li>
+        <li><b>Early Afternoon:</b> 12:00 PM - 3:00 PM</li>
+        <li><b>Afternoon:</b> 3:00 PM - 6:00 PM</li>
+        <li><b>Evening:</b> 6:00 PM - 8:00 PM</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Predict button
-if st.button('Predict'):
+if st.button('Predict', key='predict'):
     # Prepare the features as a DataFrame
     features = pd.DataFrame({
         'Year': [year],
@@ -54,9 +112,13 @@ if st.button('Predict'):
     try:
         prediction = model.predict(preprocessed_features)
         if prediction[0] == 1:
-            st.write("The flight will likely be delayed by 15 minutes or more.")
+            st.markdown("<p class='result'>The flight will likely be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
         else:
-            st.write("The flight will likely not be delayed by 15 minutes or more.")
+            st.markdown("<p class='result'>The flight will likely not be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error making prediction: {e}")
 
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Footer with developer name
+st.markdown("<div class='footer'>Developed by MOUAD AIT KHOUYA</div>", unsafe_allow_html=True)
