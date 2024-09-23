@@ -44,7 +44,7 @@ st.markdown("""
         font-weight: bold;
         padding: 10px;
         border-radius: 5px;
-        color: #333;
+        color: #fff;
         border: 2px solid;
         text-align: center;
     }
@@ -93,21 +93,6 @@ carrier = st.selectbox('Carrier', [
     'Hawaiian Airlines Inc.', 'Republic Airline', 'JetBlue Airways',
     'Allegiant Air', 'Frontier Airlines Inc.', 'Alaska Airlines Inc.'], key='carrier', help='Select the airline carrier.')
 
-# Legend for Departure Time Blocks
-st.markdown("""
-    <div class='legend'>
-    <h3>Departure Time Block Legend</h3>
-    <ul>
-        <li><b>Night:</b> 8:00 PM - 11:59 PM</li>
-        <li><b>Early Morning:</b> 12:00 AM - 6:00 AM</li>
-        <li><b>Morning:</b> 6:00 AM - 12:00 PM</li>
-        <li><b>Early Afternoon:</b> 12:00 PM - 3:00 PM</li>
-        <li><b>Afternoon:</b> 3:00 PM - 6:00 PM</li>
-        <li><b>Evening:</b> 6:00 PM - 8:00 PM</li>
-    </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
 # Predict button
 if st.button('Predict', key='predict'):
     # Prepare the features as a DataFrame
@@ -129,9 +114,9 @@ if st.button('Predict', key='predict'):
     try:
         prediction = model.predict(preprocessed_features)
         if prediction[0] == 1:
-            st.markdown("<p class='result positive-result'>The flight will likely be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
+            st.markdown("<p class='result negative-result'>The flight will likely be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
         else:
-            st.markdown("<p class='result negative-result'>The flight will likely not be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
+            st.markdown("<p class='result positive-result'>The flight will likely not be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error making prediction: {e}")
 
