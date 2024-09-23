@@ -21,16 +21,17 @@ except Exception as e:
 st.markdown("""
     <style>
     body {
-        background-color: #f0f0f5;
+        background-color: #f0f4f8;
         color: #333;
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .header {
-        background: #009688;
+        background: #007BFF;
         color: white;
-        padding: 10px;
+        padding: 15px;
         text-align: center;
-        border-radius: 5px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .container {
         margin: 20px;
@@ -41,7 +42,21 @@ st.markdown("""
     .result {
         font-size: 18px;
         font-weight: bold;
-        color: #009688;
+        padding: 10px;
+        border-radius: 5px;
+        color: #333;
+        border: 2px solid;
+        text-align: center;
+    }
+    .positive-result {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    .negative-result {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
     }
     .footer {
         text-align: center;
@@ -50,9 +65,11 @@ st.markdown("""
         color: #555;
     }
     .legend {
-        padding: 10px;
-        background: #e0f2f1;
-        border-radius: 5px;
+        padding: 15px;
+        background: #e9ecef;
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -112,9 +129,9 @@ if st.button('Predict', key='predict'):
     try:
         prediction = model.predict(preprocessed_features)
         if prediction[0] == 1:
-            st.markdown("<p class='result'>The flight will likely be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
+            st.markdown("<p class='result positive-result'>The flight will likely be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
         else:
-            st.markdown("<p class='result'>The flight will likely not be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
+            st.markdown("<p class='result negative-result'>The flight will likely not be delayed by 15 minutes or more.</p>", unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error making prediction: {e}")
 
