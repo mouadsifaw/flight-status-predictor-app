@@ -70,6 +70,10 @@ st.markdown("""
         border-radius: 10px;
         border: 1px solid #ced4da;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    .legend-item {
+        margin-bottom: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -92,6 +96,18 @@ carrier = st.selectbox('Carrier', [
     'Endeavor Air Inc.', 'PSA Airlines Inc.', 'Envoy Air',
     'Hawaiian Airlines Inc.', 'Republic Airline', 'JetBlue Airways',
     'Allegiant Air', 'Frontier Airlines Inc.', 'Alaska Airlines Inc.'], key='carrier', help='Select the airline carrier.')
+
+# Display the legend
+st.markdown("""
+    <div class="legend">
+        <div class="legend-item"><strong>Night:</strong> 12:00 AM - 6:00 AM</div>
+        <div class="legend-item"><strong>Early Morning:</strong> 6:00 AM - 9:00 AM</div>
+        <div class="legend-item"><strong>Morning:</strong> 9:00 AM - 12:00 PM</div>
+        <div class="legend-item"><strong>Early Afternoon:</strong> 12:00 PM - 3:00 PM</div>
+        <div class="legend-item"><strong>Afternoon:</strong> 3:00 PM - 6:00 PM</div>
+        <div class="legend-item"><strong>Evening:</strong> 6:00 PM - 12:00 AM</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Predict button
 if st.button('Predict', key='predict'):
